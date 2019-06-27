@@ -16,7 +16,7 @@ How do you estimate the cost a new, more complex version of an existing satellit
 
 The real data I used is proprietary, so I'm going to be using replicated "fake" data that will behave in a manner similar to the real thing. There will be some simplifications of course (e.g. no N/As, data pre-cleaned, and fewer variables used), however the code used is the same. Real results will also be presented towards the end with the names of the programs/datum points removed. 
 
-First, fetch and clean the data (xlsx file). For the demonstration, the variables "NR Classification
+First, fetch and clean the data (xlsx file).
 
 ```R
 
@@ -47,3 +47,5 @@ for (i in 1:ncol(df)) {
 }
 
 ```
+
+

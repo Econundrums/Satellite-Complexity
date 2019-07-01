@@ -26,10 +26,12 @@ Fake_Bus_Data = read_excel("Fake Bus Data.xlsx", sheet = "Fake Bus Data - For RS
 
 df = as.data.frame(Fake_Bus_Data)
 
-#We're going to want the rows labeled by program name for our dendrogram charts later.
+## We're going to want the rows labeled by program name for our dendrogram charts later.
+
 row.names(df) = df$`Variable ID` 
 
-#Variables that will determine the clusters
+## Variables that will determine the clusters
+
 vars = c('NR Classification', 'Orbit', 'Contracting Agency', 'Payload Type') 
 
 df = df[,vars] 

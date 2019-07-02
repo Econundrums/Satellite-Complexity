@@ -3,10 +3,15 @@
 # Table of Contents
 
 1. [Introduction](#introduction)
+
 2. [Dataset](#dataset)
+
 3. [Hierarchical Clustering](#hc)
+    
     i. [AGNES](#agnes)
+    
     ii. [DIANA](#diana)
+    
     iii. [Comparisons] (#comparisons)
 
 <a name="introduction"></a> 

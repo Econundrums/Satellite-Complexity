@@ -3,12 +3,11 @@
 # Table of Contents
 
 1. [Introduction](#introduction)
-
 2. [Dataset](#dataset)
-
 3. [Hierarchical Clustering](#hc)
-
-    i. [Agglomerative & Divisive Clustering (AGNES & DIANA)](#agnes&diana)
+    i. [AGNES](#agnes)
+    ii. [DIANA](#diana)
+    iii. [Comparisons] (#comparisons)
 
 <a name="introduction"></a> 
 # Introduction
@@ -63,14 +62,21 @@ for (i in 1:ncol(df)) {
 <a name="hc"></a> 
 # Hierarchical Clustering
 
-<a name="agnes"></a> 
-## Agglomerative & Divisive Clustering (AGNES)
-
-The first thing needed is to measure how similar/different each datum point is from the rest, which requires that a disparity matrix be generated using [Gower's distance](https://www.math.vu.nl/~sbhulai/papers/thesis-vandenhoven.pdf) to measure the disparity. Once this is accomplished, a linking algorithm must be chosen to "link" the data by how similar each point is relative to the rest. Both are trivial to do in R, although you might want to create a quick function that computes all the different linking methods' agglomeration coefficients (ACs), which is an index between 0 - 1 with values closer to 1 indicating a stronger cluster structure.
+The first thing needed is to measure how similar/different each datum point is from the rest, which requires that a disparity matrix be generated using [Gower's distance](https://www.math.vu.nl/~sbhulai/papers/thesis-vandenhoven.pdf) to measure the disparity. This is trivial to do in R.
 
 ```R
 library(cluster)
 dfGower = daisy(df, metric = 'gower')
+```
+
+Now a clustering algorithm must be chosen: The two main types that will be used are *agglomerative* and *divisive* clustering, or AGNES and DIANA for short. Typically you want to use AGNES for finding smaller clusters and DIANA for larger ones, but for my purposes I'm going to look at both and compare.
+
+<a name="agnes"></a> 
+## AGNES
+
+AGNES requires that you choose a *linking* algorithm to create the clusters, i.e. a method of how to link datum points and clusters of datum points to one another. There are a few ways to do this, so it's best to try them all out and see which one is producing a stronger cluster structure as measured by the agglomeration coefficient (index between 0 - 1 with values closer to 1 indicating stronger cluster structures). 
+
+```R
 linkMethod = c("average", "single", "complete", "ward")
 
 ## Function to fetch agglomeration coefficients
@@ -81,3 +87,6 @@ map_dbl(linkMethod, ac)
 > [1] 0.9027225 0.8490075 0.9372001 0.9836746
 ```
 [Ward's method](https://en.wikipedia.org/wiki/Ward%27s_method) does the best (it usually does), but you can see that all method's have good AC values, so in this case you should see very similar results no matter which method you use.
+
+<a name="diana"></a> 
+## DIANA

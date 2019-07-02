@@ -6,9 +6,9 @@
 
 2. [Dataset](#dataset)
 
-3. [Analysis](#analysis)
+3. [Hierarchical Clustering](#hc)
 
-    i. [Disparity Matrix & Linking Algorithm](#disparity&link)
+    i. [Agglomerative & Divisive Clustering (AGNES & DIANA)](#agnes&diana)
 
 <a name="introduction"></a> 
 # Introduction
@@ -60,11 +60,24 @@ for (i in 1:ncol(df)) {
 
 
 ```
-<a name="analysis"></a> 
-# Analysis
+<a name="hc"></a> 
+# Hierarchical Clustering
 
-<a name="disparity&link"></a> 
-## Disparity Matrix & Linking Algorithm
+<a name="agnes"></a> 
+## Agglomerative & Divisive Clustering (AGNES)
 
+The first thing needed is to measure how similar/different each datum point is from the rest, which requires that a disparity matrix be generated using [Gower's distance](https://www.math.vu.nl/~sbhulai/papers/thesis-vandenhoven.pdf) to measure the disparity. Once this is accomplished, a linking algorithm must be chosen to "link" the data by how similar each point is relative to the rest. Both are trivial to do in R, although you might want to create a quick function that computes all the different linking methods' agglomeration coefficients (ACs), which is an index between 0 - 1 with values closer to 1 indicating a stronger cluster structure.
 
+```R
+library(cluster)
+dfGower = daisy(df, metric = 'gower')
+linkMethod = c("average", "single", "complete", "ward")
 
+## Function to fetch agglomeration coefficients
+
+ac = function(algorithm){agnes(dfGower, method = algorithm)$ac}
+map_dbl(linkMethod, ac)
+
+> [1] 0.9027225 0.8490075 0.9372001 0.9836746
+```
+[Ward's method](https://en.wikipedia.org/wiki/Ward%27s_method) does the best (it usually does), but you can see that all method's have good AC values, so in this case you should see very similar results no matter which method you use.

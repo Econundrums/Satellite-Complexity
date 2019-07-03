@@ -97,7 +97,7 @@ map_dbl(linkMethod, ac)
 dfClust1 = hclust(dfGower, method = 'ward')
 plot(dfClust1, main = "AGNES: Ward's Method")
 ```
-![agnes plot](agnes_plot.png)
+![agnes plot](images/agnes_plot.png)
 
 
 <a name="diana"></a> 

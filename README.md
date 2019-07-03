@@ -8,11 +8,11 @@
 
 3. [Hierarchical Clustering](#hc)
     
-    i. [AGNES](#agnes)
+    a) [AGNES](#agnes)
     
-    ii. [DIANA](#diana)
+    b) [DIANA](#diana)
     
-    iii. [Comparisons](#comparisons)
+    c) [Comparisons](#comparisons)
 
 <a name="introduction"></a> 
 # Introduction

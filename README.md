@@ -118,7 +118,7 @@ tanglegram(singleDendrogram, wardDendrogram)
 
 ```
 
-![tanglegram%20-%20ward%20and%20single.png](https://github.com/Econundrums/Satellite-Complexity/blob/master/tanglegram%20-%20ward%20and%20single.png)
+![tanglegram - single and ward](https://github.com/Econundrums/Satellite-Complexity/blob/master/tanglegram%20-%20ward%20and%20single.png)
 
 <a name="diana"></a> 
 ## DIANA

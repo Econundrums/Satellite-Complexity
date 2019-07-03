@@ -91,9 +91,32 @@ map_dbl(linkMethod, ac)
 
 > [1] 0.9027225 0.8490075 0.9372001 0.9836746
 ```
-[Ward's method](https://en.wikipedia.org/wiki/Ward%27s_method) does the best (it usually does), but you can see that all method's have good AC values, so in this case you should see very similar results no matter which method you use.
+[Ward's method](https://en.wikipedia.org/wiki/Ward%27s_method) does the best (it usually does), but you can see that all method's have good AC values, so in this case you should see very similar results no matter which method you use. Checking the entanglement between the dendrograms of the methods with the lowest and highest AC values (Single and Ward) will demonstrate this. 
 
+```R
+singleClusters = hclust(dfGower, method = 'single')
+wardClusters = hclust(dfGower, method = 'ward')
 
+singleDendrogram = as.dendrogram(singleClusters)
+wardDendrogram = as.dendrogram(wardClusters)
+
+entanglement(singleDendrogram, wardDendrogram)
+> [1] 0.2120531
+```
+Values closer to 0 indicate that the clusters between the two methods are similar. In this case, 0.21 is a very good result. We can also show this visually with the function pltree, but it would be best to use a smaller range of datum points so the dendrogram are smaller and the nodes easier to see.
+
+```R
+dfGowerSmall = daisy(df[1:30, ], metric = 'gower')
+
+singleClusters = hclust(dfGowerSmall, method = 'single')
+wardClusters = hclust(dfGowerSmall, method = 'ward')
+
+singleDendrogram = as.dendrogram(singleClusters)
+wardDendrogram = as.dendrogram(wardClusters)
+
+tanglegram(singleDendrogram, wardDendrogram)
+
+```
 
 <a name="diana"></a> 
 ## DIANA

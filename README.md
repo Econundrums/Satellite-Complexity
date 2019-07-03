@@ -94,21 +94,40 @@ map_dbl(linkMethod, ac)
 [Ward's method](https://en.wikipedia.org/wiki/Ward%27s_method) does the best (it usually does), so it will be used as our linking method. Below is the dendrogram produced as a result of using AGNES.
 
 ```R
-dfClust1 = hclust(dfGower, method = 'ward')
-plot(dfClust1, main = "AGNES: Ward's Method")
+agnesCluster = hclust(dfGower, method = 'ward')
+plot(agnesCluster, main = "AGNES: Ward's Method")
 ```
 ![agnes plot](images/agnes_plot.png)
 
+As quick overview of the dendrograms: Notice that the vertical axis is labeled "height", which is the measure of disimilarity between the data being clustered. This means the higher the branches (vertical lines) are before they're fused, the more dissimilar the datum points are within the cluster.
 
 <a name="diana"></a> 
 ## DIANA
 
-DIANA is very similar to AGNES, but the difference is DIANA is the inverse of AGNES: It starts off by having every datum point in a single cluster, then breaks the cluster into other clusters that are the most different from eachother, and so on until there are only individual datum points left.
+DIANA is very similar to AGNES, but the difference is DIANA is the inverse of AGNES: It starts off by having every datum point in a single cluster, then breaks the cluster into other clusters that are the most different from eachother, and so on until there are only individual datum points left. Like AGNES, DIANA as a metric like the AC called the "Divisive Coefficient" (DC) where values closer to 1 indicate stronger cluster structures. Below is the code to retrieve the DC value and the dendrogram.
 
 ```R
 diana(dfGower)$dc
->[1] 0.933076
+[1] 0.8344378
+
+dianaCluster = diana(dfGower)
+plot(dianaCluster, main = "DIANA")
 ```
+![diana dendrogram](images/diana_plot.png)
+
 
 <a name="comparisons"></a>
 ## Comparisons
+
+Ultimately, regardless of what AC or DC values generated, choosing AGNES over DIANA, or vice versa, depends on how you want your data clustered, as well as which algorithm clusters your data in a manner that makes that leads to a conclusion that makes sense (although be careful of following this guideline because often enough the right conclusions can appear wrong at first, but are really presenting a conclusion that happens to be counterintuitive). That being said, there is a way to cross-check the two methods to see how consistent their clusters are when compared to one another. Using the "entaglement()" function, we receive a value between 0 and 1, with 0 representing no entanglement and 1 representing full entanglement. The closer to 1 the entanglement value is the more important the decision is between choosing which clustering algorithm is appropriate for representing your results. 
+
+```R
+agnesDendro = as.dendrogram(agnesCluster)
+dianaDendro = as.dendrogram(dianaCluster)
+
+entanglement(agnesDendro, dianaDendro)
+[1] 0.3276449
+
+tanglegram(agnesDendro, dianaDendro)
+```
+![tanglegram](images/tanglegram.png)

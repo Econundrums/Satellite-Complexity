@@ -12,7 +12,7 @@
     
     ii. [DIANA](#diana)
     
-    iii. [Comparisons] (#comparisons)
+    iii. [Comparisons](#comparisons)
 
 <a name="introduction"></a> 
 # Introduction

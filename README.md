@@ -74,12 +74,12 @@ library(cluster)
 dfGower = daisy(df, metric = 'gower')
 ```
 
-Now a clustering algorithm must be chosen: The two main types that will be used are *agglomerative* and *divisive* clustering, or AGNES and DIANA for short. Typically you want to use AGNES for finding smaller clusters and DIANA for larger ones, but for my purposes I'm going to look at both and compare.
+Now a clustering algorithm must be chosen; the two main types that will be used are *agglomerative* and *divisive* clustering, or AGNES and DIANA for short. Typically you want to use AGNES for finding smaller clusters and DIANA for larger ones, but for my purposes I'm going to look at both and compare.
 
 <a name="agnes"></a> 
 ## AGNES
 
-AGNES requires that you choose a *linking* algorithm to create the clusters, i.e. a method of how to link datum points and clusters of datum points to one another. There are a few ways to do this, so it's best to try them all out and see which one is producing a stronger cluster structure as measured by the agglomeration coefficient (index between 0 - 1 with values closer to 1 indicating stronger cluster structures). 
+In a nutshell, AGNES works like this: It groups datum points most similar to each other into clusters, then it groups those clusters with other clusters most similar to each other, and so on until there are no more clusters to group. To do this, AGNES requires that you choose a *linking* algorithm to link datum points/clusters with other datum points/clusters. There are a few ways to do this, so it's best to try them all out and see which one is producing a stronger cluster structure as measured by the agglomeration coefficient (index between 0 - 1 with values closer to 1 indicating stronger cluster structures). 
 
 ```R
 linkMethod = c("average", "single", "complete", "ward")
@@ -93,5 +93,12 @@ map_dbl(linkMethod, ac)
 ```
 [Ward's method](https://en.wikipedia.org/wiki/Ward%27s_method) does the best (it usually does), but you can see that all method's have good AC values, so in this case you should see very similar results no matter which method you use.
 
+
+
 <a name="diana"></a> 
 ## DIANA
+
+DIANA is very similar to AGNES, but the difference is DIANA is the inverse of AGNES: It starts off by having every datum point in a single cluster, then breaks the cluster into other clusters that are the most different from eachother, and so on until there are only individual datum points left.
+
+<a name="comparisons"></a>
+## Comparisons

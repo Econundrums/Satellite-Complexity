@@ -91,11 +91,11 @@ map_dbl(linkMethod, ac)
 
 [1] 0.7814706 0.6731902 0.8409588 0.9322525
 ```
-[Ward's method](https://en.wikipedia.org/wiki/Ward%27s_method) does the best (it usually does), so it will be used as our linking method. Below is the dendrogram produced as a result of using AGNES.
+[Ward's method](https://en.wikipedia.org/wiki/Ward%27s_method) does the best (it usually does), however it cannot be used because Ward's method required that the distance measure is euclidean and metric, both of which Gower's dissimilarity is not. Thus, the next best alternative will be the [complete-linkage](https://en.wikipedia.org/wiki/Complete-linkage_clustering) 
 
 ```R
-agnesCluster = hclust(dfGower, method = 'ward')
-plot(agnesCluster, main = "AGNES: Ward's Method")
+agnesCluster = hclust(dfGower, method = 'complete')
+plot(agnesCluster, main = "AGNES: Complete-Linkage")
 ```
 ![agnes plot](images/agnes_plot.png)
 

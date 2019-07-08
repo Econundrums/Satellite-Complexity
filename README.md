@@ -94,8 +94,8 @@ map_dbl(linkMethod, ac)
 [Ward's method](https://en.wikipedia.org/wiki/Ward%27s_method) does the best (it usually does), however it cannot be used because Ward's method required that the distance measure is euclidean and metric, both of which Gower's dissimilarity is not. Thus, the next best alternative will be the [complete-linkage](https://en.wikipedia.org/wiki/Complete-linkage_clustering) 
 
 ```R
-agnesCluster = hclust(dfGower, method = 'complete')
-plot(agnesCluster, main = "AGNES: Complete-Linkage")
+agnesCluster = agnes(dfGower, method = 'complete')
+pltree(agnesCluster, cex = 0.7, main = "AGNES: Complete-Linkage")
 ```
 ![agnes plot](images/agnes_plot.png)
 
@@ -111,7 +111,7 @@ diana(dfGower)$dc
 [1] 0.8344378
 
 dianaCluster = diana(dfGower)
-plot(dianaCluster, main = "DIANA")
+pltree(dianaCluster, cex = 0.7, main = "DIANA")
 ```
 ![diana dendrogram](images/diana_plot.png)
 
@@ -126,8 +126,10 @@ agnesDendro = as.dendrogram(agnesCluster)
 dianaDendro = as.dendrogram(dianaCluster)
 
 entanglement(agnesDendro, dianaDendro)
-[1] 0.3276449
+[1] 0.06436557
 
 tanglegram(agnesDendro, dianaDendro)
 ```
 ![tanglegram](images/tanglegram.png)
+
+As highlighted in the engtanglement value and image above, choosing DIANA or AGNES for this exercise will yield similar results. 

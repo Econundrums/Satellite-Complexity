@@ -13,11 +13,13 @@
     b) [DIANA](#diana)
     
     c) [Comparisons](#comparisons)
+    
+    d) [Choosing N-Clusters](#nclusters)
 
 <a name="introduction"></a> 
 # Introduction
 
-How do you estimate the cost a new, more complex version of an existing satellite? Typically, when estimating the first theoretical unit cost (T1), an analyst will simply multiply the old T1 cost of the existing satellite by a *complexity factor*, which is derived by meeting with the Program Manager(s) and technical team to discuss an appropriate value. This way of doing business can be very subjective and prone to much uncertainty. Fortunately for me, one of my more clever colleagues devised a way to capture complexity for satellite payloads in a more objective manner using *hierarchical clustering*, a technique that I attempted to replicate to capture complexity at the bus level of the satellites my team and I were tasked to estimate.
+How do you estimate the cost a new, more complex version of an existing satellite? Typically, when estimating the first theoretical unit cost (T1), an analyst will simply multiply the old T1 cost of the existing satellite by a *complexity factor*, which is derived by meeting with the Program Manager(s) and technical team to discuss an appropriate value. This way of doing business can be very subjective and prone to much uncertainty. Fortunately for me, one of my more clever colleagues devised a way to capture complexity for satellite payloads in a more objective manner using *hierarchical clustering* (HC), a technique that I attempted to replicate to capture complexity at the bus level of the satellites my team and I were tasked to estimate.
 
 <a name="dataset"></a> 
 # Dataset
@@ -74,7 +76,7 @@ library(cluster)
 dfGower = daisy(df, metric = 'gower')
 ```
 
-Now a clustering algorithm must be chosen; the two main types that will be used are *agglomerative* and *divisive* clustering, or AGNES and DIANA for short. Typically you want to use AGNES for finding smaller clusters and DIANA for larger ones, but for my purposes I'm going to look at both and compare.
+Now a clustering algorithm must be chosen; the two main types that will be used are *agglomerative* and *divisive* clustering, or AGNES and DIANA for short. Typically, you want to use AGNES for finding smaller clusters and DIANA for larger ones, but for my purposes I'm going to look at both and compare.
 
 <a name="agnes"></a> 
 ## AGNES
@@ -132,4 +134,9 @@ tanglegram(agnesDendro, dianaDendro)
 ```
 ![tanglegram](images/tanglegram.png)
 
-As highlighted in the engtanglement value and image above, choosing DIANA or AGNES for this exercise will yield similar results. 
+As highlighted in the engtanglement value and image above, choosing DIANA or AGNES for this exercise will yield similar results. However, since I'm looking for 
+
+<a name="introduction"></a> 
+## Choosing N-Clusters
+
+The last thing needed in order to apply HC to our complexity analysis is to pick the optimal number of clusters to group our datum points in. 

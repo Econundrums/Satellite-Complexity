@@ -134,9 +134,32 @@ tanglegram(agnesDendro, dianaDendro)
 ```
 ![tanglegram](images/tanglegram.png)
 
-As highlighted in the engtanglement value and image above, choosing DIANA or AGNES for this exercise will yield similar results. However, since I'm looking for 
+As highlighted in the engtanglement value and image above, choosing DIANA or AGNES for this exercise will yield similar results. In the real world the results aren't so clean and there are vast differences in scope between military and commercial busses, as well as vast intra-differences between military busses, thus (IMO) AGNES would be the appropriate choice for reflecting both the inter/intra-differences between military and commercial/other military clusters of satellite busses.
 
 <a name="introduction"></a> 
 ## Choosing N-Clusters
 
-The last thing needed in order to apply HC to our complexity analysis is to pick the optimal number of clusters to group our datum points in. 
+The last thing needed in order to apply HC to our complexity analysis is to pick the optimal number of clusters to group our datum points in. There are three ways to measure this: Elbow-method, average silhouette method, and the gap statistic (info on each method can be found [here](https://uc-r.github.io/kmeans_clustering#elbow). The methods, although described for K-Means, can also be applied to HC). This is very easy to do with the 'factoextra' package.
+
+```R
+
+hcut_agnes = function(data, k){hcut(data, k, hc_method = "complete", 
+                                    hc_func = "agnes")}
+set.seed(1)
+fviz_nbclust(as.matrix(dfGower), FUN = hcut_agnes, k.max = 20, nboot = 500, 
+             method = "wss")
+set.seed(2)
+fviz_nbclust(as.matrix(dfGower), FUN = hcut_agnes, k.max = 20, nboot = 500,
+             method = "silhouette")
+set.seed(3)
+fviz_nbclust(as.matrix(dfGower), FUN = hcut_agnes, k.max = 20, nboot = 500,
+             method = "gap_stat")
+
+fviz_cluster(hcut(as.matrix(dfGower), 3, hc_func = "agnes", 
+                  hc_method = "complete"))
+
+```
+![elbow method](images/elbow_agnes)
+![average silhouette](images/silhouette_agnes)
+![gap statistic](images/gap_agnes)
+![clusters](images/cluster_agnes)

@@ -15,6 +15,10 @@
     c) [Comparisons](#comparisons)
     
     d) [Choosing N-Clusters](#nclusters)
+    
+4. [Complexity Factor](#complexity)
+
+5. [Conclusion and Real Results](#conclusion)
 
 <a name="introduction"></a> 
 # Introduction
@@ -142,6 +146,7 @@ As highlighted in the engtanglement value and image above, choosing DIANA or AGN
 The last thing needed in order to apply HC to our complexity analysis is to pick the optimal number of clusters to group our datum points in. There are three ways to measure this: Elbow-method, average silhouette method, and the gap statistic (info on each method can be found [here](https://uc-r.github.io/kmeans_clustering#elbow). The methods, although described for K-Means, can also be applied to HC). This is very easy to do with the 'factoextra' package.
 
 ```R
+library(factoextra)
 
 hcut_agnes = function(data, k){hcut(data, k, hc_method = "complete", 
                                     hc_func = "agnes")}
@@ -154,12 +159,19 @@ fviz_nbclust(as.matrix(dfGower), FUN = hcut_agnes, k.max = 20, nboot = 500,
 set.seed(3)
 fviz_nbclust(as.matrix(dfGower), FUN = hcut_agnes, k.max = 20, nboot = 500,
              method = "gap_stat")
-
-fviz_cluster(hcut(as.matrix(dfGower), 3, hc_func = "agnes", 
-                  hc_method = "complete"))
-
 ```
 ![elbow method](images/elbow_agnes.png)
 ![average silhouette](images/silhouette_agnes.png)
 ![gap statistic](images/gap_agnes.png)
+
+The elbow method says 3-4 clusters is optimal (hard to tell where the elbow is), average silhouette says 2, while the gap statistic says 3 is optimal. For this specific purpose, a cluster of 2 would be useless (which will be elaborated on later), so choosing 3 clusters seems best. Below is an image of how the data would be group based on our chosen N clusters.
+
+```R
+fviz_cluster(hcut(as.matrix(dfGower), 3, hc_func = "agnes", 
+                  hc_method = "complete"))
+```
+
 ![clusters](images/cluster_agnes.png)
+
+# Complexity Factor
+

@@ -48,13 +48,14 @@ Now on to the actual code. First, fetch and organize the data (xlsx file).
 
 library(readxl)
 
-Fake_Bus_Data = read_excel("Fake Bus Data.xlsx", sheet = "Fake Bus Data - For RStudio")
+Fake_Bus_Data = read_excel("Fake Bus Data.xlsx")
 
 df = as.data.frame(Fake_Bus_Data)
 
 # We're going to want the rows labeled by program name for our dendrogram charts later.
 
-row.names(df) = df$`Variable ID` 
+row.names(df) = df$program_name
+df$program_name = NULL
 
 #The "for-loop" below runs through each column and sets each cell's value to either 
 #"numeric" if the value checks out as a number, or a as a factor otherwise. For some 

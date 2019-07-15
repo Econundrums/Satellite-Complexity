@@ -18,7 +18,7 @@
     
 4. [Complexity Factor](#complexity)
 
-5. [Conclusion and Real Results](#conclusion)
+5. [Results & Conclusion](#conclusion)
 
 <a name="introduction"></a> 
 # Introduction
@@ -28,7 +28,7 @@ How do you estimate the cost a new, more complex version of an existing satellit
 <a name="dataset"></a> 
 # Dataset
 
-The real data I used is proprietary, so I'm going to be using replicated "fake" data that will behave in a manner similar to the real thing. There will be some simplifications of course (e.g. no N/As, data pre-cleaned, and fewer variables used), however the code used is the same except for additional cleaning script that wouldn't be relevant for pre-cleaned data. Real results will also be presented towards the end with the names of the programs/datum points removed. 
+The real data I used is proprietary, so I'm going to be using replicated "fake" data that will behave in a manner similar to the real thing. There will be some simplifications of course (e.g. no N/As, data pre-cleaned, and fewer variables used), however the code used is the same except for additional cleaning script that wouldn't be relevant for pre-cleaned data.
 
 For this analysis, the variables chosen to categorize satellites by complexity will be the following:
 
@@ -42,11 +42,20 @@ For this analysis, the variables chosen to categorize satellites by complexity w
 
 5. Date Difference: This is a user created numerical variable that measures the number of days between when the satellites' contract was awarded to a vendor and the first launch date. The logic being that more complex satellites typically take longer to develop, as well as have delays in their program acquisition scheduling.
 
-Now on to the actual code. First, fetch and organize the data (xlsx file).
+Now on to the actual code. First, load the required packages, which for this project are the following...
 
 ```R
-
 library(readxl)
+library(tidyverse)
+library(factoextra)
+library(dendextend)
+library(cluster)
+```
+
+
+Now fetch and organize the data (xlsx file). It's important that you randomize the data as well because hierarchical clustering algorithms are sensitive to the order of the data.
+
+```R
 
 Fake_Bus_Data = read_excel("Fake Bus Data.xlsx")
 
@@ -69,6 +78,11 @@ for (i in 1:ncol(df)) {
       df[,i] = as.factor(df[,i])
 }
 
+## Shuffles the data because clustering algorithms are 
+## sensitive to the order of the data.
+
+set.seed(1)
+df = df[sample(nrow(df)), ]
 
 ```
 <a name="hc"></a> 

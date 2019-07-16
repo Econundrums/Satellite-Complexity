@@ -233,13 +233,19 @@ F-statistic: 37.09 on 1 and 28 DF,  p-value: 1.436e-06
 
 ```
 
-Thus, not only should there be 3 additional category columns, but the T1 costs and weight values need to be logged.
+As you can see, the overall model and coefficient for the variable "log_weight" are highly significant (F-statistic = 37.09 and p-value < 0.001, respectively) with ~ 55% (Adj. R-squared) of the variation being explained by the independent variable.
+
+Now we'll run another linear model with the categories/clusters as dummy variables while keeping the log_weight variable as well.
 
 ```R
+## Matches each datum point with its respective cluster
+
 dfCat = data.frame('program_name' = clusters$order.lab,
                    'category' = clusters$cluster)
 row.names(dfCat) = dfCat$program_name
 dfCat$program_name = NULL
+
+## Combines the two dataframes into one
 
 df2 = merge(df, dfCat, by = 'row.names')
 row.names(df2) = df2$Row.names
@@ -249,7 +255,6 @@ df2$cat1 = ifelse(df2$category == 1, 1, 0)
 df2$cat2 = ifelse(df2$category == 2, 1, 0)
 df2$cat3 = ifelse(df2$category == 3, 1, 0)
 
-
 df2$log_t1 = log(df2$t1_k)
 df2$log_weight = log(df2$weight_lbs)
 ```
@@ -257,4 +262,30 @@ df2$log_weight = log(df2$weight_lbs)
 <a name="conclusion"></a> 
 # Results & Conclusion
 
+Running our new linear model in R will get us our final results.
 
+```R
+lmFit4 = lm(log_t1 ~ log_weight + cat1 + cat2 + cat3, data = df2)
+summary(lmFit4)
+
+Call:
+lm(formula = log_t1 ~ log_weight + cat1 + cat2 + cat3, data = df2)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.88793 -0.36871 -0.00764  0.37291  0.77559 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) -0.92231    1.20574  -0.765   0.4515    
+log_weight   1.14185    0.19190   5.950 3.27e-06 ***
+cat1         0.63600    0.34691   1.833   0.0787 .  
+cat2         0.06309    0.24170   0.261   0.7962    
+cat3        -0.07145    0.27972  -0.255   0.8005    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.5026 on 25 degrees of freedom
+Multiple R-squared:  0.6343,	Adjusted R-squared:  0.5758 
+F-statistic: 10.84 on 4 and 25 DF,  p-value: 3.089e-05
+```

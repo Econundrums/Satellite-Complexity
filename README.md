@@ -91,7 +91,6 @@ df = df[sample(nrow(df)), ]
 The first thing needed is to measure how similar/different each datum point is from the rest, which requires that a disparity matrix be generated using [Gower's distance](https://www.math.vu.nl/~sbhulai/papers/thesis-vandenhoven.pdf) to measure the disparity. This is trivial to do in R.
 
 ```R
-library(cluster)
 dfGower = daisy(df, metric = 'gower')
 ```
 
@@ -110,7 +109,7 @@ linkMethod = c("average", "single", "complete", "ward")
 ac = function(algorithm){agnes(dfGower, method = algorithm)$ac}
 map_dbl(linkMethod, ac)
 
-[1] 0.7814706 0.6731902 0.8409588 0.9322525
+[1] 0.8054316 0.7022997 0.8615475 0.9376650
 ```
 [Ward's method](https://en.wikipedia.org/wiki/Ward%27s_method) does the best (it usually does), however it cannot be used because Ward's method required that the distance measure is euclidean and metric, both of which Gower's dissimilarity is not. Thus, the next best alternative will be the [complete-linkage](https://en.wikipedia.org/wiki/Complete-linkage_clustering) 
 
@@ -129,7 +128,7 @@ DIANA is very similar to AGNES, but the difference is DIANA is the inverse of AG
 
 ```R
 diana(dfGower)$dc
-[1] 0.8344378
+[1] 0.8499909
 
 dianaCluster = diana(dfGower)
 pltree(dianaCluster, cex = 0.7, main = "DIANA")
@@ -147,7 +146,7 @@ agnesDendro = as.dendrogram(agnesCluster)
 dianaDendro = as.dendrogram(dianaCluster)
 
 entanglement(agnesDendro, dianaDendro)
-[1] 0.06436557
+[1] 0.0784724
 
 tanglegram(agnesDendro, dianaDendro)
 ```
@@ -161,32 +160,101 @@ As highlighted in the engtanglement value and image above, choosing DIANA or AGN
 The last thing needed in order to apply HC to our complexity analysis is to pick the optimal number of clusters to group our datum points in. There are three ways to measure this: Elbow-method, average silhouette method, and the gap statistic (info on each method can be found [here](https://uc-r.github.io/kmeans_clustering#elbow). The methods, although described for K-Means, can also be applied to HC). This is very easy to do with the 'factoextra' package.
 
 ```R
-library(factoextra)
-
 hcut_agnes = function(data, k){hcut(data, k, hc_method = "complete", 
                                     hc_func = "agnes")}
-set.seed(1)
+hcut_diana = function(data, k){hcut(data, k, hc_method = "complete", 
+                                    hc_func = "diana")}
+
 fviz_nbclust(as.matrix(dfGower), FUN = hcut_agnes, k.max = 20, nboot = 500, 
              method = "wss")
-set.seed(2)
+fviz_nbclust(as.matrix(dfGower), FUN = hcut_diana, k.max = 20, nboot = 500, 
+             method = "wss")
+
 fviz_nbclust(as.matrix(dfGower), FUN = hcut_agnes, k.max = 20, nboot = 500,
              method = "silhouette")
-set.seed(3)
+fviz_nbclust(as.matrix(dfGower), FUN = hcut_diana, k.max = 20, nboot = 500,
+             method = "silhouette")
+
 fviz_nbclust(as.matrix(dfGower), FUN = hcut_agnes, k.max = 20, nboot = 500,
+             method = "gap_stat")
+fviz_nbclust(as.matrix(dfGower), FUN = hcut_diana, k.max = 20, nboot = 500, 
              method = "gap_stat")
 ```
 ![elbow method](images/elbow_agnes.png)
 ![average silhouette](images/silhouette_agnes.png)
 ![gap statistic](images/gap_agnes.png)
 
-The elbow method says 3-4 clusters is optimal (hard to tell where the elbow is), average silhouette says 2, while the gap statistic says 3 is optimal. For this specific purpose, a cluster of 2 would be useless (which will be elaborated on later), so choosing 3 clusters seems best. Below is an image of how the data would be group based on our chosen N clusters.
+The elbow method says 4 clusters is optimal, average silhouette says 2, and the gap statistic says 4. For this specific purpose, a cluster of 2 would be useless (which will be elaborated on later), so choosing 4 clusters seems best. Below is an image of how the data would be group based on our chosen N clusters.
 
 ```R
-fviz_cluster(hcut(as.matrix(dfGower), 3, hc_func = "agnes", 
-                  hc_method = "complete"))
+clusters = hcut(as.matrix(dfGower), 4, hc_func = "agnes", 
+                   hc_method = "complete")
+ 
+fviz_cluster(clusters)
 ```
 
 ![clusters](images/cluster_agnes.png)
 
+<a name="complexity"></a> 
 # Complexity Factor
+
+Now on to the "meat" of the project. Since there are 4 clusters, there needs to be three additional category columns added to the dataframe to categorize the datum points by complexity. I'll then run a regression to test the statistical and cost significance of the new categorical dummy variables.
+
+A bit of background: Typically, satellite T1 bus costs follow a nonlinear relationship with the bus's weight, so a log-log regression is best used to capture a linear relationship between the percent change in T1 costs due to a percent change in the bus's weight.   
+
+logT1 = &beta;<sub>0</sub> + &beta;<sub>1</sub>log Weight 
+
+An early look at our linear model in R with just logged weights will illuminate in more detail.
+
+```R
+df$log_t1 = log(df$t1_k)
+df$log_weight = log(df$weight_lbs)
+
+lmFit = lm(log_t1 ~ log_weight, data = df)
+summary(lmFit)
+
+Call:
+lm(formula = log_t1 ~ log_weight, data = df)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.96477 -0.42143 -0.01532  0.40436  1.14038 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  -0.8027     1.1922  -0.673    0.506    
+log_weight    1.1354     0.1864   6.090 1.44e-06 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.5151 on 28 degrees of freedom
+Multiple R-squared:  0.5698,	Adjusted R-squared:  0.5545 
+F-statistic: 37.09 on 1 and 28 DF,  p-value: 1.436e-06
+
+```
+
+Thus, not only should there be 3 additional category columns, but the T1 costs and weight values need to be logged.
+
+```R
+dfCat = data.frame('program_name' = clusters$order.lab,
+                   'category' = clusters$cluster)
+row.names(dfCat) = dfCat$program_name
+dfCat$program_name = NULL
+
+df2 = merge(df, dfCat, by = 'row.names')
+row.names(df2) = df2$Row.names
+df2$Row.names = NULL
+
+df2$cat1 = ifelse(df2$category == 1, 1, 0)
+df2$cat2 = ifelse(df2$category == 2, 1, 0)
+df2$cat3 = ifelse(df2$category == 3, 1, 0)
+
+
+df2$log_t1 = log(df2$t1_k)
+df2$log_weight = log(df2$weight_lbs)
+```
+
+<a name="conclusion"></a> 
+# Results & Conclusion
+
 

@@ -266,7 +266,7 @@ Running our new linear model in R will get us our final results.
 
 ```R
 lmFit2 = lm(log_t1 ~ log_weight + cat1 + cat2 + cat3, data = df2)
-summary(lmFit4)
+summary(lmFit2)
 
 Call:
 lm(formula = log_t1 ~ log_weight + cat1 + cat2 + cat3, data = df2)
@@ -289,4 +289,4 @@ Residual standard error: 0.5026 on 25 degrees of freedom
 Multiple R-squared:  0.6343,	Adjusted R-squared:  0.5758 
 F-statistic: 10.84 on 4 and 25 DF,  p-value: 3.089e-05
 ```
-The "cat1" cluster is the only category statistically significant amongst the other 4 (the unlisted fourth cluster effects would be captured by the intercept, which isn't significant either). The F-statistic is a bit weaker due to the inclusion of two other insignificant variables, however the standard error and adj. r-squared have been lowered/increased slightly, suggesting that model is a (slightly) better fit than our original log-log model with just log_weight as the only explanatory variable (which doesn't seem to be very sensitive to the inclusion of the dummy variables when looking at its t-statistic and standard error). Overall, the model suggests that if a satellite can be fits into the 
+The "cat1" cluster is the only category statistically significant amongst the other 4 (the unlisted fourth cluster effects would be captured by the intercept, which isn't significant either). The F-statistic is a bit weaker due to the inclusion of two other insignificant variables, however the standard error and adj. r-squared have been lowered/increased slightly, suggesting that model is a (slightly) better fit than our original log-log model with just log_weight as the only explanatory variable (which also doesn't seem to be very sensitive to the inclusion of the dummy variables when looking at its t-statistic and standard error). Overall, the model suggests that if a satellite bus is grouped within the first cluster, a 1% increase in the bus's weight will increase its T1 costs by ~0.64%. Thus, our "complexity factor"

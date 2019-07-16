@@ -32,15 +32,15 @@ The real data I used is proprietary, so I'm going to be using replicated "fake" 
 
 For this analysis, the variables chosen to categorize satellites by complexity will be the following:
 
-1. Orbit: There are two orbits listed: LEO and GEO (Low Earth Orbit and Geostationary Orbit, respectively). Satellites in LEO orbit     are more complex than ones in GEO because, since there are more of them in order to cover larger geographical areas, they require more ground antennas to have successful communicaiton operations. This can get expensive, especially when ground antennas need to be installed at varying elevations.
+1. **Orbit:** There are two orbits listed: LEO and GEO (Low Earth Orbit and Geostationary Orbit, respectively). Satellites in LEO orbit     are more complex than ones in GEO because, since there are more of them in order to cover larger geographical areas, they require more ground antennas to have successful communicaiton operations. This can get expensive, especially when ground antennas need to be installed at varying elevations.
 
-2. Mission Type: There are four mission types: Scientific, Experimental, Environmental, and Communications. Missions involving research (i.e. Scientific and sometimes Experimental) typically use more current technology in order to enhance performance and measurement accuracy. 
+2. **Mission Type:** There are four mission types: Scientific, Experimental, Environmental, and Communications. Missions involving research (i.e. Scientific and sometimes Experimental) typically use more current technology in order to enhance performance and measurement accuracy. 
 
-3. Bus Type: There are two bus types: Standard and Unique. Unique busses require more nonrecurring development in order to be able to perform more unique/specific mission CONOPs.  
+3. **Bus Type:** There are two bus types: Standard and Unique. Unique busses require more nonrecurring development in order to be able to perform more unique/specific mission CONOPs.  
 
-4. Level of Protection: There are two levels of protection: Low and Medium. Satellites with higher levels of protection are thought to require more nonrecurring development in order to be able to enhance durability. 
+4. **Level of Protection:** There are two levels of protection: Low and Medium. Satellites with higher levels of protection are thought to require more nonrecurring development in order to be able to enhance durability. 
 
-5. Date Difference: This is a user created numerical variable that measures the number of days between when the satellites' contract was awarded to a vendor and the first launch date. The logic being that more complex satellites typically take longer to develop, as well as have delays in their program acquisition scheduling.
+5. **Date Difference:** This is a user created numerical variable that measures the number of days between when the satellites' contract was awarded to a vendor and the first launch date. The logic being that more complex satellites typically take longer to develop, as well as have delays in their program acquisition scheduling.
 
 Now on to the actual code. First, load the required packages, which for this project are the following...
 
@@ -265,7 +265,7 @@ df2$log_weight = log(df2$weight_lbs)
 Running our new linear model in R will get us our final results.
 
 ```R
-lmFit4 = lm(log_t1 ~ log_weight + cat1 + cat2 + cat3, data = df2)
+lmFit2 = lm(log_t1 ~ log_weight + cat1 + cat2 + cat3, data = df2)
 summary(lmFit4)
 
 Call:
@@ -289,3 +289,4 @@ Residual standard error: 0.5026 on 25 degrees of freedom
 Multiple R-squared:  0.6343,	Adjusted R-squared:  0.5758 
 F-statistic: 10.84 on 4 and 25 DF,  p-value: 3.089e-05
 ```
+The "cat1" cluster is the only category statistically significant amongst the other 4 (the unlisted fourth cluster effects would be captured by the intercept, which isn't significant either). The F-statistic is a bit weaker due to the inclusion of two other insignificant variables, however the standard error and adj. r-squared have been lowered/increased slightly, suggesting that model is a (slightly) better fit than our original log-log model with just log_weight as the only explanatory variable (which doesn't seem to be very sensitive to the inclusion of the dummy variables when looking at its t-statistic and standard error). Overall, the model suggests that if a satellite can be fits into the 
